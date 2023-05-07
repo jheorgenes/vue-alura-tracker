@@ -12,10 +12,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType } from 'vue';
 import Cronometro from './Cronometro.vue';
 import ITarefa from '../interfaces/ITarefa';
-import Box from './Box.vue'
+import Box from './Box.vue';
 
 export default defineComponent({
   name: 'Tarefa',
