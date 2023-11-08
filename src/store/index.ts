@@ -1,36 +1,29 @@
-import IProjeto from "@/interfaces/IProjeto";
+import { INotificacao } from "@/interfaces/INotificacao";
 import { InjectionKey } from "vue";
 import { Store, createStore, useStore as vuexUseStore } from "vuex";
-import { ADICIONA_PROJETO, ALTERA_PROJETO, EXCLUIR_PROJETO, NOTIFICAR } from "./tipo-mutacoes";
-import { INotificacao } from "@/interfaces/INotificacao";
+import { EstadoDoProjeto, projeto } from './modulos/projeto';
+import { EstadoTarefa, tarefa } from "./modulos/tarefas";
+import { NOTIFICAR } from "./tipo-mutacoes";
 
-interface Estado {
-  projetos: IProjeto[],
-  notificacoes: INotificacao[]
+export interface Estado {
+  notificacoes: INotificacao[],
+  projeto: EstadoDoProjeto
+  tarefa: EstadoTarefa,
 }
 
 export const key: InjectionKey<Store<Estado>> = Symbol();
 
 export const store = createStore<Estado>({
   state: {
-    projetos: [],
-    notificacoes: []
+    notificacoes: [],
+    projeto: {
+      projetos: []
+    },
+    tarefa: {
+      tarefas: []
+    },
   },
   mutations: {
-    [ADICIONA_PROJETO](state, nomeDoProjeto: string) {
-      const projeto = {
-        id: new Date().toISOString(),
-        nome: nomeDoProjeto
-      } as IProjeto
-      state.projetos.push(projeto)
-    },
-    [ALTERA_PROJETO](state, projeto: IProjeto) {
-      const index = state.projetos.findIndex(proj => proj.id == projeto.id);
-      state.projetos[index] = projeto;
-    },
-    [EXCLUIR_PROJETO](state, id: string) {
-      state.projetos = state.projetos.filter(proj => proj.id != id);
-    },
     [NOTIFICAR](state, novaNotificacao: INotificacao) {
       novaNotificacao.id = new Date().getTime();
       state.notificacoes.push(novaNotificacao);
@@ -38,9 +31,13 @@ export const store = createStore<Estado>({
       setTimeout(()=> {
         state.notificacoes = state.notificacoes.filter(notificacao => notificacao.id != novaNotificacao.id)
       }, 3000);
-    }
+    },
+  },
+  modules: {
+    projeto,
+    tarefa
   }
-})
+});
 
 export function useStore(): Store<Estado> {
   return vuexUseStore(key);
