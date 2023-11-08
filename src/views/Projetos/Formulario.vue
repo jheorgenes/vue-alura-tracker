@@ -18,53 +18,56 @@
 
 <script lang="ts">
 import { useStore } from '@/store';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 import { TipoNotificacao } from '@/interfaces/INotificacao';
 
 import useNotificador from "@/hooks/notificador";
 import { ALTERAR_PROJETO, CADASTRAR_PROJETO } from '@/store/tipo-acoes';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'Formulario',
   props: {
     id: { type: String }
   },
-  mounted() {
-    if(this.id) {
-      const projeto = this.store.state.projeto.projetos.find((proj) => proj.id == this.id);
-      this.nomeDoProjeto = projeto?.nome || '';
-    }
-  },
-  data() {
-    return {
-      nomeDoProjeto: ''
-    }
-  },
-  methods: {
-    salvar() {
-      if(this.id) {
-        this.store
-          .dispatch(ALTERAR_PROJETO, { id: this.id, nome: this.nomeDoProjeto })
-          .then(() => this.ligarComSucesso());
-      } else {
-        this.store
-          .dispatch(CADASTRAR_PROJETO, this.nomeDoProjeto)
-          .then(() => this.ligarComSucesso());
-      }
-    },
-    ligarComSucesso() {
-      this.nomeDoProjeto = '';
-      this.notificar(TipoNotificacao.SUCESSO, 'Excelente!', 'O projeto foi cadastrado com sucesso!')
-      this.$router.push('/projetos');
-    }
-  },
-  setup() {
+  setup(props) {
+    /**
+     * Uma observação importante é que no setup, ainda não existe this (pra nada)
+     * Só teria acesso a lógica do this depois que o setup é criado.
+     */
+    const router = useRouter();
     const store = useStore();
     const { notificar } = useNotificador();
+
+    const nomeDoProjeto = ref(""); //Com isso o nomeDoProjeto se torna uma variável reativa. Para acessar o valor dela deve colocar o .value na frente
+
+    if(props.id) {
+      const projeto = store.state.projeto.projetos.find((proj) => proj.id == props.id);
+      nomeDoProjeto.value = projeto?.nome || '';
+    }
+
+    const ligarComSucesso = () => {
+      nomeDoProjeto.value = '';
+      notificar(TipoNotificacao.SUCESSO, 'Excelente!', 'O projeto foi cadastrado com sucesso!')
+      router.push('/projetos');
+    }
+
+    const salvar = () => {
+      if(props.id) {
+        store
+          .dispatch(ALTERAR_PROJETO, { id: props.id, nome: nomeDoProjeto.value })
+          .then(() => ligarComSucesso());
+      } else {
+        store
+          .dispatch(CADASTRAR_PROJETO, nomeDoProjeto.value)
+          .then(() => ligarComSucesso());
+      }
+    }
+
     return {
-      store,
-      notificar
+      nomeDoProjeto,
+      salvar
     }
   }
 })

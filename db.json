@@ -6,7 +6,11 @@
     },
     {
       "id": 2,
-      "nome": "Estudos pessoais 2"
+      "nome": "Estudos pessoais"
+    },
+    {
+      "nome": "Estudando padrões de projeto",
+      "id": 3
     }
   ],
   "tarefas": [
@@ -27,6 +31,15 @@
         "nome": "Alura Tracker"
       },
       "id": 2
+    },
+    {
+      "duracaoEmSegundos": 9,
+      "descricao": "Teste",
+      "projeto": {
+        "nome": "Estudando padrões de projeto",
+        "id": 3
+      },
+      "id": 3
     }
   ]
 }
