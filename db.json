@@ -40,6 +40,15 @@
         "id": 3
       },
       "id": 3
+    },
+    {
+      "duracaoEmSegundos": 5,
+      "descricao": "Alguma coisa",
+      "projeto": {
+        "nome": "Estudando padrões de projeto",
+        "id": 3
+      },
+      "id": 4
     }
   ]
 }
