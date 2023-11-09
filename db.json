@@ -34,7 +34,7 @@
     },
     {
       "duracaoEmSegundos": 9,
-      "descricao": "Teste",
+      "descricao": "Teste 2",
       "projeto": {
         "nome": "Estudando padrões de projeto",
         "id": 3
